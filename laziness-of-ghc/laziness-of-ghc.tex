@@ -1,0 +1,57 @@
+\documentclass{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[cache=false]{minted}
+\usetheme{Madrid}
+\AtBeginSection[]
+{
+  \begin{frame}
+    \frametitle{Contents}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+%------------------------------------------
+
+\title[Laziness in GHC Haskell]
+{Laziness in GHC Haskell}
+
+\subtitle{The features and principles}
+
+\author[chip]
+{Presented by chip}
+
+\institute[ZJU]
+{
+  ZJU Lambda\\
+  From here to World
+}
+
+\date[ZJU-Lambda 2019]
+{ZJU-Lambda Conference, May 2019}
+
+\logo{\includegraphics[height=1.5cm]{Haskell-Logo.png}}
+
+\begin{document}
+\frame{\titlepage}
+
+%--------------------------------------------
+
+
+\section{Laziness and strictness}
+
+\begin{frame}
+\frametitle{Some examples}
+\begin{listing}[H]
+\inputminted{haskell}{a.hs}
+\caption{Example of a listing.}
+\label{lst:example}
+\end{listing}
+\end{frame}
+
+\section{GHC Heap}
+\begin{frame}
+\frametitle{Heap}
+This is a text in the first frame. This is a text in the first frame. This is a text in the first frame.
+\end{frame}
+
+\end{document}
