@@ -2,6 +2,7 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[cache=false]{minted}
+
 \usetheme{Madrid}
 \AtBeginSection[]
 {
@@ -10,7 +11,7 @@
     \tableofcontents[currentsection]
   \end{frame}
 }
-%------------------------------------------
+%--------------------------------------------
 
 \title[Laziness in GHC Haskell]
 {Laziness in GHC Haskell}
@@ -34,23 +35,53 @@
 \begin{document}
 \frame{\titlepage}
 
+
+\section{Some examples}
 %--------------------------------------------
 
-\section{Laziness and strictness}
-
 \begin{frame}
-\frametitle{Some examples}
-\begin{listing}[H]
-\inputminted{haskell}{src/a.hs}
-\caption{Example of a listing.}
-\label{lst:example}
-\end{listing}
+\frametitle{Example 1: No evaluation}
+
+\inputminted{haskell}{src/no-evaluation.hs}
+\par\noindent\rule{0.6\textwidth}{1.0pt}
+\newline\newline
+Well, it prints \mintinline{haskell}{0}
+
 \end{frame}
 
-\section{GHC Heap}
+%--------------------------------------------
+
 \begin{frame}
-\frametitle{Heap}
-This is a text in the first frame. This is a text in the first frame. This is a text in the first frame.
+\frametitle{Example 2: Evaluate to WHNF}
+
+\inputminted{haskell}{src/evaluate-to-WHNF.hs}
+\par\noindent\rule{0.6\textwidth}{1.0pt}
+\newline\newline
+It prints \mintinline{haskell}{2} !
+\newline
+What happened here?
+
 \end{frame}
 
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Example 2: Evaluate to WHNF}
+The actual evaluating process:
+\newline
+\inputminted{haskell}{src/length'-procedure.hs}
+
+\begin{block}{Remember}
+In WHNF, we only evaluate the outermost constructor
+\end{block}
+\end{frame}
+
+
+\section{Thunks}
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{What's inside the box?}
+
+\end{frame}
 \end{document}
