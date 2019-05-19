@@ -30,7 +30,7 @@
 \date[ZJU-Lambda 2019]
 {ZJU-Lambda Conference, May 2019}
 
-\logo{\includegraphics[height=1.5cm]{./pic/haskell-logo.png}}
+\logo{\includegraphics[height=1.2cm]{./pic/haskell-logo.png}}
 
 \begin{document}
 \frame{\titlepage}
@@ -67,7 +67,7 @@ What happened here?
 
 \begin{frame}
 \frametitle{Example 2: Evaluate to WHNF}
-The actual evaluating process:
+The actual evaluation process:
 \newline
 \inputminted{haskell}{src/length'-procedure.hs}
 
@@ -94,13 +94,12 @@ In WHNF, we only evaluate the outermost constructor
 %--------------------------------------------
 
 \begin{frame}
-\frametitle{Thunk}
-Every item is wrapped up nicely in a box:
-\newline
+\frametitle{Box}
+Every item is wrapped up nicely in a box:\newline
 The Haskell heap is a heap of \textit{presents} (thunks).
 \begin{figure}[hbt!]
     \centering
-    \includegraphics[height=0.5\textheight]{./pic/thunk.png}
+    \includegraphics[height=0.4\textheight]{./pic/thunk.png}
 \end{figure}
 \end{frame}
 
@@ -108,11 +107,10 @@ The Haskell heap is a heap of \textit{presents} (thunks).
 
 \begin{frame}
 \frametitle{Present}
-When you actually want what’s inside the present, you \textit{open it up} (evaluate it).
-\newline
+When you actually want what’s inside the present, you \textit{open it up} (evaluate it).\newline
 \begin{figure}[hbt!]
     \centering
-    \includegraphics[height=0.5\textheight]{./pic/thunk-nullary.png}
+    \includegraphics[height=0.4\textheight]{./pic/thunk-nullary.png}
 \end{figure}
 \end{frame}
 
@@ -133,5 +131,94 @@ There might be more than one (the tuple gift card), if you’re a lucky duck!
 \end{figure}
 \end{frame}
 
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Tricksters}
+Presents on the Haskell heap are rather mischievous.\newline
+
+\begin{columns}
+\column{0.5\textwidth}
+\begin{figure}[hbt!]
+    \includegraphics[height=0.3\textheight]{./pic/thunk-bomb.png}
+\end{figure}
+\begin{center}
+Explode when you open it
+\end{center}
+
+\column{0.5\textwidth}
+\begin{figure}[hbt!]
+    \includegraphics[height=0.3\textheight]{./pic/thunk-ghost.png}
+\end{figure}
+\begin{center}
+Haunted by ghosts that open other presents when disturbed
+\end{center}
+\end{columns}
+\end{frame}
+
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{What is a \textit{thunk}?}
+\mintinline{haskell}{<thunk: expression-to-be-evaluated>}\bigskip
+\begin{itemize}
+    \item A box containing unevaluated expressions.
+    \item Being evaluated when \textit{needed}.
+    \item Basically \textbf{anything} creates a thunk in (GHC) Haskell, by default
+\end{itemize}
+\end{frame}
+
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Example: Evaluate a thunk}
+How will this expression be evaluated?\newline\bigskip
+\mintinline{haskell}{map negate [1,2,3]}\newline\bigskip\pause
+\mintinline{haskell}{<@: map negate <@: (1:2:3:[])>>}\newline\bigskip\pause
+\mintinline{haskell}{<@: negate <@: 1> : <@: map negate <@: [2,3]>>}\newline\bigskip\pause
+\mintinline{haskell}{-<@: 1> : <@: map negate <@: [2,3]>>}\newline\bigskip\pause
+\mintinline{haskell}{-1 : <@: map negate <@: [2,3]>>}
+\end{frame}
+
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Thunk brings us...}
+\begin{itemize}
+    \item On-demand data types.
+    \item Call-by-need strategy.
+    \item Memory reuse on CAF (Constant Applicative Forms).
+    \item ...
+\end{itemize}\bigskip
+\inputminted{haskell}{src/fibs.hs}
+\end{frame}
+
+
+\section{Why we need strictness?}
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Thunks are good, but...}
+\inputminted{haskell}{src/lazy-foldl.hs}\bigskip
+What about \mintinline{haskell}{foldl (+) 0 [1..1000000000]} ?\newline
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[height=0.4\textheight]{./pic/evil-of-thunk.png}
+\end{figure}
+\end{frame}
+
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Memory leak}
+After executing \mintinline{haskell}{foldl (+) 0 [1..1000000000]}\newline
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[height=0.1\textheight]{./pic/memory-usage-ghc.png}
+    \newline\newline
+    A veritable ghost jamboree in our memory!
+    \includegraphics[height=0.4\textheight]{./pic/ghost-party.png}
+\end{figure}
+\end{frame}
 
 \end{document}
