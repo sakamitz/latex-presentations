@@ -18,5 +18,7 @@ Beamer (latex-beamer)
 
 Pygmentize (pip install)
 
+Latin modern fonts (lmodern)
+
 ## Compile
-> $ pdflatex -shell-escape ./whatever.tex
+> $ xelatex -shell-escape ./whatever.tex
