@@ -1,9 +1,12 @@
 \documentclass{beamer}
 
+\usepackage{fontspec}
 \usepackage[utf8]{inputenc}
 \usepackage[cache=false]{minted}
-
 \usetheme{Madrid}
+
+\setmonofont{Fira Code}
+\newmintedfile[haskellcode]{haskell}{style=trac}
 \AtBeginSection[]
 {
   \begin{frame}
@@ -36,26 +39,47 @@
 \frame{\titlepage}
 
 
-\section{Some examples}
+\section{Appetizer}
 %--------------------------------------------
 
 \begin{frame}
-\frametitle{Example 1: No evaluation}
+\frametitle{Course 1: Outside in}
 
-\inputminted{haskell}{src/no-evaluation.hs}
-\par\noindent\rule{0.6\textwidth}{1.0pt}
+\haskellcode{src/outside-in.hs}
+\par\noindent\rule{0.75\textwidth}{1.0pt}
 \newline\newline
-Well, it prints \mintinline{haskell}{0}
+If we apply \mintinline{haskell}{possiblyBottom} to \mintinline{haskell}{True}, we will get a \mintinline{haskell}{0}.
 
 \end{frame}
 
 %--------------------------------------------
 
 \begin{frame}
-\frametitle{Example 2: Evaluate to WHNF}
+\frametitle{Course 1: Outside in}
 
-\inputminted{haskell}{src/evaluate-to-WHNF.hs}
-\par\noindent\rule{0.6\textwidth}{1.0pt}
+A slightly arcane form:\newline
+\haskellcode{src/arcane-form.hs}
+
+\end{frame}
+
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Course 1: Outside in}
+
+Nesting lambdas and reducing from the outside in:\newline
+(They are not in fact decomposed this way by the compiler)\newline
+\haskellcode{src/lambda-nesting.hs}
+
+\end{frame}
+
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Course 2: Evaluate to WHNF}
+
+\haskellcode{src/evaluate-to-WHNF.hs}
+\par\noindent\rule{0.7\textwidth}{1.0pt}
 \newline\newline
 It prints \mintinline{haskell}{2} !
 \newline
@@ -69,7 +93,7 @@ What happened here?
 \frametitle{Example 2: Evaluate to WHNF}
 The actual evaluation process:
 \newline
-\inputminted{haskell}{src/length'-procedure.hs}
+\haskellcode{src/length'-procedure.hs}
 
 \begin{block}{Concept}
 In WHNF, we only evaluate the outermost constructor
@@ -190,7 +214,7 @@ How will this expression be evaluated?\newline\bigskip
     \item Memory reuse on CAF (Constant Applicative Forms).
     \item ...
 \end{itemize}\bigskip
-\inputminted{haskell}{src/fibs.hs}
+\haskellcode{src/fibs.hs}
 \end{frame}
 
 
@@ -199,7 +223,7 @@ How will this expression be evaluated?\newline\bigskip
 
 \begin{frame}
 \frametitle{Thunks are good, but...}
-\inputminted{haskell}{src/lazy-foldl.hs}\bigskip
+\haskellcode{src/lazy-foldl.hs}\bigskip
 What about \mintinline{haskell}{foldl (+) 0 [1..1000000000]} ?\newline
 \begin{figure}[hbt!]
     \centering
