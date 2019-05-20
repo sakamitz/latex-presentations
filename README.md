@@ -10,7 +10,7 @@
 | --------------- | ---------------- | ------------------------------------------------------------ |
 | laziness-of-ghc | **Preparing** | The feature and principle about lazy evaluation in GHC Haskell, on **ZJU-Lambda Conference**, May 2019 |
 
-### Dependencies
+## Dependencies
 
 Texlive
 
@@ -18,5 +18,5 @@ Beamer (latex-beamer)
 
 Pygmentize (pip install)
 
-### Compile
+## Compile
 > $ pdflatex -shell-escape ./whatever.tex
