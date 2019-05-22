@@ -1,0 +1,8 @@
+  ...
+  664 MB total memory in use
+
+  MUT     time    1.791s  (  1.804s elapsed)
+  GC      time    2.255s  (  2.282s elapsed)
+  Total   time    4.102s  (  4.146s elapsed)
+
+  %GC     time      55.0%  (55.0% elapsed)

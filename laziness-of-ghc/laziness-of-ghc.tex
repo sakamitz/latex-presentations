@@ -3,10 +3,15 @@
 \usepackage{fontspec}
 \usepackage[utf8]{inputenc}
 \usepackage[cache=false]{minted}
-\usetheme{Madrid}
+\usepackage{graphicx}
 
+\usetheme{Madrid}
 \setmonofont{Fira Code}
 \newmintedfile[haskellcode]{haskell}{style=trac}
+\newmintedfile[shelllog]{console}{style=murphy}
+\definecolor{shellcolor}{gray}{0.6}
+\newcommand{\inlinehaskell}[1]{\mintinline[style=trac]{haskell}{#1}}
+\newcommand{\inlineshell}[1]{\textcolor{shellcolor}{\textbf{#1}}}
 \AtBeginSection[]
 {
   \begin{frame}
@@ -39,7 +44,7 @@
 \frame{\titlepage}
 
 
-\section{Appetizer}
+\section{Appetizers}
 %--------------------------------------------
 
 \begin{frame}
@@ -48,7 +53,7 @@
 \haskellcode{src/outside-in.hs}
 \par\noindent\rule{0.75\textwidth}{1.0pt}
 \newline\newline
-If we apply \mintinline{haskell}{possiblyBottom} to \mintinline{haskell}{True}, we will get a \mintinline{haskell}{0}.
+If we apply \inlinehaskell{possiblyBottom} to \inlinehaskell{True}, we will get a \inlinehaskell{0}.
 
 \end{frame}
 
@@ -81,7 +86,7 @@ Nesting lambdas and reducing from the outside in:\newline
 \haskellcode{src/evaluate-to-WHNF.hs}
 \par\noindent\rule{0.7\textwidth}{1.0pt}
 \newline\newline
-It prints \mintinline{haskell}{2} !
+It prints \inlinehaskell{2} !
 \newline
 What happened here?
 
@@ -184,7 +189,7 @@ Haunted by ghosts that open other presents when disturbed
 
 \begin{frame}
 \frametitle{What is a \textit{thunk}?}
-\mintinline{haskell}{<thunk: expression-to-be-evaluated>}\bigskip
+\inlinehaskell{<thunk: expression-to-be-evaluated>}\bigskip
 \begin{itemize}
     \item A box containing unevaluated expressions.
     \item Being evaluated when \textit{needed}.
@@ -197,11 +202,11 @@ Haunted by ghosts that open other presents when disturbed
 \begin{frame}
 \frametitle{Example: Evaluate a thunk}
 How will this expression be evaluated?\newline\bigskip
-\mintinline{haskell}{map negate [1,2,3]}\newline\bigskip\pause
-\mintinline{haskell}{<@: map negate <@: (1:2:3:[])>>}\newline\bigskip\pause
-\mintinline{haskell}{<@: negate <@: 1> : <@: map negate <@: [2,3]>>}\newline\bigskip\pause
-\mintinline{haskell}{-<@: 1> : <@: map negate <@: [2,3]>>}\newline\bigskip\pause
-\mintinline{haskell}{-1 : <@: map negate <@: [2,3]>>}
+\inlinehaskell{map negate [1,2,3]}\newline\bigskip\pause
+\inlinehaskell{<@: map negate <@: (1:2:3:[])>>}\newline\bigskip\pause
+\inlinehaskell{<@: negate <@: 1> : <@: map negate <@: [2,3]>>}\newline\bigskip\pause
+\inlinehaskell{-<@: 1> : <@: map negate <@: [2,3]>>}\newline\bigskip\pause
+\inlinehaskell{-1 : <@: map negate <@: [2,3]>>}
 \end{frame}
 
 %--------------------------------------------
@@ -224,7 +229,7 @@ How will this expression be evaluated?\newline\bigskip
 \begin{frame}
 \frametitle{Thunks are good, but...}
 \haskellcode{src/lazy-foldl.hs}\bigskip
-What about \mintinline{haskell}{foldl (+) 0 [1..1000000000]} ?\newline
+What about \inlinehaskell{foldl (+) 0 [1..1000000000]} ?\newline
 \begin{figure}[hbt!]
     \centering
     \includegraphics[height=0.4\textheight]{./pic/evil-of-thunk.png}
@@ -235,7 +240,7 @@ What about \mintinline{haskell}{foldl (+) 0 [1..1000000000]} ?\newline
 
 \begin{frame}
 \frametitle{Memory leak}
-After executing \mintinline{haskell}{foldl (+) 0 [1..1000000000]}\newline
+After executing \inlinehaskell{foldl (+) 0 [1..1000000000]}\newline
 \begin{figure}[hbt!]
     \centering
     \includegraphics[height=0.1\textheight]{./pic/memory-usage-ghc.png}
@@ -243,6 +248,118 @@ After executing \mintinline{haskell}{foldl (+) 0 [1..1000000000]}\newline
     A veritable ghost jamboree in our memory!
     \includegraphics[height=0.4\textheight]{./pic/ghost-party.png}
 \end{figure}
+\end{frame}
+
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Example: Profiling}
+\haskellcode{src/profiling.hs}\bigskip
+\end{frame}
+
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{RTS - Runtime System}
+\begin{figure}[hbt!]
+\begin{center}
+\includegraphics[height=0.6\textheight]{./pic/rts-overview.png}
+\caption{RTS Overview}
+\end{center}
+\end{figure}
+
+\end{frame}
+
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Statistics}
+Compile it.\newline
+\inlineshell{ghc --make -rtsopts -O2 a.hs}\newline\bigskip
+\inlineshell{./a 1e7 +RTS -sstderr}\newline
+Output:\newline
+\shelllog{./src/profiling.stderr}
+
+\end{frame}
+
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Basic Profiling}
+Mark the cost centres
+\begin{itemize}
+    \item SCC pragma
+    \item Option \inlineshell{-auto-all}
+    \item and \inlineshell{-caf-all}, if needed
+\end{itemize}\bigskip
+
+Then, compile with option \inlineshell{-prof}\newline
+Run \inlineshell{./a 1e7 +RTS -p}, we get a file \inlineshell{a.prof}
+\end{frame}
+
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Basic Profiling}
+\begin{figure}[hbt!]
+\begin{center}
+\includegraphics[height=0.7\textheight]{./pic/profiling.png}
+\caption{Profiling message generated by RTS}
+\end{center}
+\end{figure}
+\end{frame}
+
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Heap Profiling}
+
+\begin{figure}[hbt!]
+\begin{center}
+\includegraphics[height=0.7\textheight]{./pic/profiling-hd.ps}
+\caption{Break by constr­uct­or/­closure}
+\end{center}
+\end{figure}
+
+\end{frame}
+
+\section{Be more strict}
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Using \textit{seq}}
+\inlinehaskell{seq :: a -> b -> b}\newline
+\inlinehaskell{seq} evaluates its first argument to \textbf{WHNF}, and return the second one.\bigskip
+
+\inlinehaskell{($!) :: (a -> b) -> a -> b  -- |infixr 0|}\newline
+\inlinehaskell{$!} is similar with \inlinehaskell{$}, but evaluates its argument to \textbf{WHNF}.
+
+\end{frame}
+
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Control.DeepSeq}
+\inlinehaskell{deepseq :: NFData a => a -> b -> b}\newline\newline
+\inlinehaskell{($!!) :: NFData a => (a -> b) -> a -> b  -- |infixr 0|}\newline\newline
+\inlinehaskell{force :: NFData a => a -> a}\newline
+\inlinehaskell{force x = x `deepseq` x}\newline
+\haskellcode{./src/NFData.hs}
+
+\end{frame}
+
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Control.Parallel}
+\inlinehaskell{par :: a -> b -> b  -- |infixr 0|}\newline
+Indicates that it may be beneficial to evaluate the first argument in parallel with the second. Returns the value of the second argument.\newline\newline
+\inlinehaskell{pseq :: a -> b -> b   -- |infixr 0|}\newline
+Guarantee the order of evaluation in parallelism.\newline
+\newline\pause
+
+\inlinehaskell{a `seq` b <==> b `seq` a `seq` b}
+
 \end{frame}
 
 \end{document}

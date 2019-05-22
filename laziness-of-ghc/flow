@@ -2,3 +2,8 @@ laziness -> non-strictness
 bottom -> halting problem -> staticly determine -> dependent type
 thunk -> foldl -> seq
 outside-in -> WHNF
+
+without O2
+
+seq -> keep it in outermost -> force
+seq -> pseq
