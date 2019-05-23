@@ -1,7 +1,9 @@
 laziness -> non-strictness
 bottom -> halting problem -> staticly determine -> dependent type
-thunk -> foldl -> seq
 outside-in -> WHNF
+
+thunk -> CAF
+actual value -> differ unboxed & boxed
 
 without O2
 

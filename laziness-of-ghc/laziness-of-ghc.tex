@@ -3,6 +3,7 @@
 \usepackage{fontspec}
 \usepackage[utf8]{inputenc}
 \usepackage[cache=false]{minted}
+\usepackage{hyperref}
 \usepackage{graphicx}
 
 \usetheme{Madrid}
@@ -12,6 +13,7 @@
 \definecolor{shellcolor}{gray}{0.6}
 \newcommand{\inlinehaskell}[1]{\mintinline[style=trac]{haskell}{#1}}
 \newcommand{\inlineshell}[1]{\textcolor{shellcolor}{\textbf{#1}}}
+\hypersetup{colorlinks=false}
 \AtBeginSection[]
 {
   \begin{frame}
@@ -49,47 +51,39 @@
 
 \begin{frame}
 \frametitle{Course 1: Outside in}
-
 \haskellcode{src/outside-in.hs}
 \par\noindent\rule{0.75\textwidth}{1.0pt}
 \newline\newline
 If we apply \inlinehaskell{possiblyBottom} to \inlinehaskell{True}, we will get a \inlinehaskell{0}.
-
 \end{frame}
 
 %--------------------------------------------
 
 \begin{frame}
 \frametitle{Course 1: Outside in}
-
 A slightly arcane form:\newline
 \haskellcode{src/arcane-form.hs}
-
 \end{frame}
 
 %--------------------------------------------
 
 \begin{frame}
 \frametitle{Course 1: Outside in}
-
 Nesting lambdas and reducing from the outside in:\newline
 (They are not in fact decomposed this way by the compiler)\newline
 \haskellcode{src/lambda-nesting.hs}
-
 \end{frame}
 
 %--------------------------------------------
 
 \begin{frame}
 \frametitle{Course 2: Evaluate to WHNF}
-
 \haskellcode{src/evaluate-to-WHNF.hs}
 \par\noindent\rule{0.7\textwidth}{1.0pt}
 \newline\newline
 It prints \inlinehaskell{2} !
 \newline
 What happened here?
-
 \end{frame}
 
 %--------------------------------------------
@@ -99,7 +93,6 @@ What happened here?
 The actual evaluation process:
 \newline
 \haskellcode{src/length'-procedure.hs}
-
 \begin{block}{Concept}
 In WHNF, we only evaluate the outermost constructor
 \end{block}
@@ -189,24 +182,29 @@ Haunted by ghosts that open other presents when disturbed
 
 \begin{frame}
 \frametitle{What is a \textit{thunk}?}
-\inlinehaskell{<thunk: expression-to-be-evaluated>}\bigskip
+\inlinehaskell{<thunk: expression-to-be-evaluated>}
 \begin{itemize}
     \item A box containing unevaluated expressions.
     \item Being evaluated when \textit{needed}.
     \item Basically \textbf{anything} creates a thunk in (GHC) Haskell, by default
 \end{itemize}
+
+\begin{figure}[hbt!]
+\begin{center}
+\includegraphics[height=0.4\textheight]{./pic/thunk-map.png}
+\caption{Thunks created by a map}
+\end{center}
+\end{figure}
 \end{frame}
 
 %--------------------------------------------
 
 \begin{frame}
 \frametitle{Example: Evaluate a thunk}
-How will this expression be evaluated?\newline\bigskip
-\inlinehaskell{map negate [1,2,3]}\newline\bigskip\pause
-\inlinehaskell{<@: map negate <@: (1:2:3:[])>>}\newline\bigskip\pause
-\inlinehaskell{<@: negate <@: 1> : <@: map negate <@: [2,3]>>}\newline\bigskip\pause
-\inlinehaskell{-<@: 1> : <@: map negate <@: [2,3]>>}\newline\bigskip\pause
-\inlinehaskell{-1 : <@: map negate <@: [2,3]>>}
+\haskellcode{./src/thunk-sprint.hs}
+\begin{block}{Important}
+Once evaluated, the thunk is replaced by its \textit{actual} value.
+\end{block}
 \end{frame}
 
 %--------------------------------------------
@@ -219,7 +217,7 @@ How will this expression be evaluated?\newline\bigskip
     \item Memory reuse on CAF (Constant Applicative Forms).
     \item ...
 \end{itemize}\bigskip
-\haskellcode{src/fibs.hs}
+\haskellcode{./src/fibs.hs}
 \end{frame}
 
 
@@ -253,21 +251,20 @@ After executing \inlinehaskell{foldl (+) 0 [1..1000000000]}\newline
 %--------------------------------------------
 
 \begin{frame}
-\frametitle{Example: Profiling}
-\haskellcode{src/profiling.hs}\bigskip
-\end{frame}
-
-%--------------------------------------------
-
-\begin{frame}
-\frametitle{RTS - Runtime System}
+\frametitle{RTS - a non-trivial Runtime System}
 \begin{figure}[hbt!]
 \begin{center}
 \includegraphics[height=0.6\textheight]{./pic/rts-overview.png}
 \caption{RTS Overview}
 \end{center}
 \end{figure}
+\end{frame}
 
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Example: Profiling}
+\haskellcode{src/profiling.hs}
 \end{frame}
 
 %--------------------------------------------
@@ -275,11 +272,10 @@ After executing \inlinehaskell{foldl (+) 0 [1..1000000000]}\newline
 \begin{frame}
 \frametitle{Statistics}
 Compile it.\newline
-\inlineshell{ghc --make -rtsopts -O2 a.hs}\newline\bigskip
-\inlineshell{./a 1e7 +RTS -sstderr}\newline
+\inlineshell{ghc --make -rtsopts -O2 a.hs}\newline
+\inlineshell{./a 1e7 +RTS -sstderr}\newline\newline
 Output:\newline
 \shelllog{./src/profiling.stderr}
-
 \end{frame}
 
 %--------------------------------------------
@@ -320,7 +316,6 @@ Run \inlineshell{./a 1e7 +RTS -p}, we get a file \inlineshell{a.prof}
 \caption{Break by constr­uct­or/­closure}
 \end{center}
 \end{figure}
-
 \end{frame}
 
 \section{Be more strict}
@@ -329,7 +324,7 @@ Run \inlineshell{./a 1e7 +RTS -p}, we get a file \inlineshell{a.prof}
 \begin{frame}
 \frametitle{Using \textit{seq}}
 \inlinehaskell{seq :: a -> b -> b}\newline
-\inlinehaskell{seq} evaluates its first argument to \textbf{WHNF}, and return the second one.\bigskip
+\inlinehaskell{seq} evaluates its first argument to \textbf{WHNF}, and return the second one.\newline
 
 \inlinehaskell{($!) :: (a -> b) -> a -> b  -- |infixr 0|}\newline
 \inlinehaskell{$!} is similar with \inlinehaskell{$}, but evaluates its argument to \textbf{WHNF}.
@@ -340,12 +335,7 @@ Run \inlineshell{./a 1e7 +RTS -p}, we get a file \inlineshell{a.prof}
 
 \begin{frame}
 \frametitle{Control.DeepSeq}
-\inlinehaskell{deepseq :: NFData a => a -> b -> b}\newline\newline
-\inlinehaskell{($!!) :: NFData a => (a -> b) -> a -> b  -- |infixr 0|}\newline\newline
-\inlinehaskell{force :: NFData a => a -> a}\newline
-\inlinehaskell{force x = x `deepseq` x}\newline
-\haskellcode{./src/NFData.hs}
-
+\haskellcode{./src/deepseq.hs}
 \end{frame}
 
 %--------------------------------------------
@@ -353,13 +343,23 @@ Run \inlineshell{./a 1e7 +RTS -p}, we get a file \inlineshell{a.prof}
 \begin{frame}
 \frametitle{Control.Parallel}
 \inlinehaskell{par :: a -> b -> b  -- |infixr 0|}\newline
-Indicates that it may be beneficial to evaluate the first argument in parallel with the second. Returns the value of the second argument.\newline\newline
+Indicates that it may be beneficial to evaluate the first argument in parallel with the second. Returns the value of the second argument.\newline
+
 \inlinehaskell{pseq :: a -> b -> b   -- |infixr 0|}\newline
 Guarantee the order of evaluation in parallelism.\newline
 \newline\pause
-
+Possible transformation on \inlinehaskell{seq}:\newline
 \inlinehaskell{a `seq` b <==> b `seq` a `seq` b}
+\end{frame}
 
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{More on parallel programming}
+Please refer to:\newline\newline
+\textbf{Control.Parallel.Strategies} (deterministic parallelism)\newline\newline
+\textbf{Control.Concurrent} (non-deterministic parallelism)\newline\newline
+\href{http://simonmar.github.io/bib/papers/strategies.pdf}{Seq no more: Better Strategies for Parallel Haskell}
 \end{frame}
 
 \end{document}

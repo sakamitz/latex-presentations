@@ -16,9 +16,11 @@ Texlive
 
 Beamer (latex-beamer)
 
-Pygmentize (pip install)
+Pygmentize
 
 Latin modern fonts (lmodern)
+
+Fira Code
 
 ## Compile
 > $ xelatex -shell-escape ./whatever.tex
