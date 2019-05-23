@@ -7,5 +7,10 @@ actual value -> differ unboxed & boxed
 
 without O2
 
+ret type -> D# -> heap checking
+unbox -> register
+
+what can be further optimized
+
 seq -> keep it in outermost -> force
 seq -> pseq

@@ -214,7 +214,7 @@ Once evaluated, the thunk is replaced by its \textit{actual} value.
 \begin{itemize}
     \item On-demand data types.
     \item Call-by-need strategy.
-    \item Memory reuse on CAF (Constant Applicative Forms).
+    \item Result sharing on CAF (Constant Applicative Forms).
     \item ...
 \end{itemize}\bigskip
 \haskellcode{./src/fibs.hs}
@@ -318,7 +318,142 @@ Run \inlineshell{./a 1e7 +RTS -p}, we get a file \inlineshell{a.prof}
 \end{figure}
 \end{frame}
 
-\section{Be more strict}
+
+\section{Optimization}
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Example}
+Where might be the cost centres?
+\newline
+\haskellcode{./src/optimization-original.hs}
+\end{frame}
+
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Method 1: Using strict functions}
+\haskellcode{./src/optimization-strict-fold.hs}
+\par\noindent\rule{0.85\textwidth}{1.0pt}
+\newline\newline
+Why can't we just write \inlinehaskell{(n,s) `seq` (n+1, s+x)} ?
+\end{frame}
+
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Method 2: Bang patterns}
+\haskellcode{./src/optimization-bang-patterns.hs}
+\end{frame}
+
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Method 3: Strict data types}
+\haskellcode{./src/optimization-strict-types.hs}
+\par\noindent\rule{0.85\textwidth}{1.0pt}
+\newline\newline
+The \inlinehaskell{Pair} will always store its fields in WHNF.
+\end{frame}
+
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Method 4: Unbox values}
+Introduction: Core
+\begin{itemize}
+    \item An intermediate language used by GHC.
+    \item Resembles a subset of Haskell
+    \item Explicit type annotations ($F_C$)
+    \item Type equality constraints and safe coercions
+\end{itemize}
+\bigskip
+To check the Core, compile with \inlineshell{-ddump-simpl}
+\end{frame}
+
+
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Method 4: Unbox values}
+Simplified Core: inlined \inlinehaskell{fold'}
+\newline
+\haskellcode{./src/optimization-core-boxed.hs}
+\par\noindent\rule{0.8\textwidth}{1.0pt}
+\newline\newline
+More to optimize?
+\end{frame}
+
+
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Method 4: Unbox values}
+Avoid heap checking:
+\inlinehaskell{data Pair = Pair !Int !Double}\newline
+Unbox the \inlinehaskell{Pair}:
+using flag \inlineshell{-funbox-strict-fields}
+\newline
+\haskellcode{./src/optimization-core-unboxed.hs}
+\par\noindent\rule{0.9\textwidth}{1.0pt}
+\newline\newline
+Now, except the nodes of list, all the values are stored in registers.
+\end{frame}
+
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Statistics}
+Compile it.\newline
+\inlineshell{ghc --make -funbox-strict-fields -rtsopts -O2 a.hs}\newline
+\inlineshell{./a 1e7 +RTS -sstderr}\newline\newline
+Output:\newline
+\shelllog{./src/optimization.stderr}
+\end{frame}
+
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Summary}
+\begin{tabular}{ccccc}
+\hline
+    &  Memory used  &   MUT  &      GC        & Total\\
+\hline
+Original  & 1519 MB & 2.905s & 8.936s(75.3\%) & 11.865s\\
+Optimized &   1 MB  & 1.490s & 0.016s(1.0\%) &  1.509s\\
+\hline
+\end{tabular}
+\newline\newline
+What we can learn is:
+\begin{itemize}
+    \item Compile with \inlineshell{-O2} flag.
+    \item Go profiling(Time/Heap) when confused.
+    \item Avoid calculations piling up (using strictness).
+    \item Unbox atom types \inlinehaskell{(Int, Double,...)}
+    \item Use types that can be transformed into primitives (\inlinehaskell{Int} instead of \inlinehaskell{Integer})
+\end{itemize}
+\end{frame}
+
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Further optimization}
+\begin{itemize}
+    \item Deforestation (remove intermediate structures)
+    \item Rely on gcc -O2 (\inlineshell{-fvia-C -optc-O2})
+\end{itemize}
+\bigskip
+In our example, we can use a deforestation called \textbf{stream fusion}.\newline
+It turns \textit{recursive list generation} and \textit{transformation functions} into \textit{non-recursive unfolds}
+\end{frame}
+
+\begin{frame}
+\frametitle{Stream fusion}
+\haskellcode{./src/optimization-fusion.hs}
+\end{frame}
+
+
+\section{Tasty seq}
 %--------------------------------------------
 
 \begin{frame}
@@ -328,7 +463,6 @@ Run \inlineshell{./a 1e7 +RTS -p}, we get a file \inlineshell{a.prof}
 
 \inlinehaskell{($!) :: (a -> b) -> a -> b  -- |infixr 0|}\newline
 \inlinehaskell{$!} is similar with \inlinehaskell{$}, but evaluates its argument to \textbf{WHNF}.
-
 \end{frame}
 
 %--------------------------------------------
@@ -360,6 +494,21 @@ Please refer to:\newline\newline
 \textbf{Control.Parallel.Strategies} (deterministic parallelism)\newline\newline
 \textbf{Control.Concurrent} (non-deterministic parallelism)\newline\newline
 \href{http://simonmar.github.io/bib/papers/strategies.pdf}{Seq no more: Better Strategies for Parallel Haskell}
+\end{frame}
+
+%--------------------------------------------
+
+\begin{frame}
+\frametitle{Thank you!}
+\begin{center}
+    This work is licensed under \textbf{CC-BY-SA 4.0}
+    \newline
+    \href{https://creativecommons.org/licenses/by-sa/4.0/}{Creative Commons Attribution Share Alike 4.0 International}
+    \newline\newline
+    You can find the slides on my \href{https://github.com/sakamitz/latex-presentations/tree/master/laziness-of-ghc}{\textbf{Github}}
+    \newline\newline
+    (The hyperlinks really exist, but they are not colored. x)
+\end{center}
 \end{frame}
 
 \end{document}
