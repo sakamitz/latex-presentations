@@ -353,7 +353,7 @@ Why can't we just write \inlinehaskell{(n,s) `seq` (n+1, s+x)} ?
 \haskellcode{./src/optimization-strict-types.hs}
 \par\noindent\rule{0.85\textwidth}{1.0pt}
 \newline\newline
-The \inlinehaskell{Pair} will always store its fields in WHNF.
+The \inlinehaskell{Pair} will always store its fields in WHNF, thus NF for atoms.
 \end{frame}
 
 %--------------------------------------------
