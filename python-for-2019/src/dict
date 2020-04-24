@@ -1,0 +1,18 @@
+# 以键：值的方式创建字典
+>>> dict1 = {'name': 'Bob', 'age': 27}
+>>> len(dict1), 'age' in dict1
+(3, True)   # in 用于判断某个键是否存在
+# 用字典的fromkeys方法创建字典
+>>> seq = ('name', 'age', 'gender')
+>>> dict2 = dict.fromkeys(seq)
+>>> dict2
+{'name': None, 'age': None, 'gender': None}
+>>> dict3 = dict.fromkeys(seq, 10)
+>>> dict3
+{'name': 10, 'age': 10, 'gender': 10}
+
+# 通过键值对的方式创建字典
+# 键值对由两个元素的列表或元组构成
+>>> a = [('name','Bob'),('age',27)]
+>>> dict(a)
+{'name': 'Bob', 'age': 27}

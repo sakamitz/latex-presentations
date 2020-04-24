@@ -1,0 +1,3 @@
+print :: a+ -> ()  -- print接受多个任意类型的值，无返回值
+max :: Real+ -> Real  -- max函数接受多个int或float，返回最大值
+len :: [a] -> Int  -- len接受一个任意类型的列表，返回其长度(int)

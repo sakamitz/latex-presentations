@@ -1,0 +1,12 @@
+d = {'name':'Ace','age':17}
+for k in d.keys():      # 遍历键
+    print(k, end=' ')   # 输出：name age
+
+for v in d.values():    # 遍历值
+    print(v, end=' ')   # 输出：Ace 17
+
+for k,v in d.items():   # 同时遍历键值对
+    print('{}:{}'.format(k, v))
+# 输出
+name:Ace
+age:17

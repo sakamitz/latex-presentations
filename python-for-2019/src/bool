@@ -1,0 +1,2 @@
+>>> sum([1==2, 'white'.islower(), 'himself'.endswith('self')])
+2

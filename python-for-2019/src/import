@@ -1,0 +1,12 @@
+# 如果要使用几个数学函数
+import math # 仅引入模块，使用具体函数时要加math前缀
+from math import sin,cos # 不引入模块，仅引入需要的函数
+from math import * # 不引入模块，导入所有函数和全局变量
+
+# 查看模块的可用内容
+>>> import math
+>>> dir(math)
+[..., # 省略部分内容
+'log', 'log10', 'log1p', 'log2', 'modf', 'nan',
+'perm', 'pi', 'pow', 'prod', 'radians', 'remainder',
+'sin', 'sinh', 'sqrt', 'tan', 'tanh', 'tau', 'trunc']

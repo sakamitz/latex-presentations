@@ -1,0 +1,12 @@
+# 引用传递
+def changeThis(mylist):
+    '修改传入的列表'
+    mylist.append([1,2])
+    print('函数内取值: ', mylist)
+
+mylist = [10,20,30]
+changeThis(mylist)
+print('函数外取值: ', mylist)
+# 输出
+# 函数内取值:  [10, 20, 30, [1, 2, 3, 4]]
+# 函数外取值:  [10, 20, 30, [1, 2, 3, 4]]

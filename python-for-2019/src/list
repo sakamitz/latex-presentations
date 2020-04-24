@@ -1,0 +1,9 @@
+>>> a = [1,0,3,2]
+# 默认按从小到大排序，传入reverse=True则相反
+>>> a.sort(reverse=True)
+>>> a
+[3, 2, 1, 0]
+# 根据sin值的大小来排序
+>>> a.sort(key=math.sin)
+>>> a
+[0, 3, 1, 2]

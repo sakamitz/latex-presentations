@@ -1,0 +1,17 @@
+# idNum=319000, name='LiHua', score=95
+>>> [idNum,name,score] = 319000,'LiHua',95
+
+# 星号代表解构，可以收集不定数量的值
+>>> idNum,name,*scoreList = [319000,'LiHua',90,95,85,79]
+>>> print(idNum,name,scoreList)
+319000 LiHua [90, 95, 85, 79]
+
+# 解构的另一个例子
+>>> first,second,*mid,last = [1,2,3,4,5,6,7]
+>>> print(mid)
+[3, 4, 5, 6]
+
+# 优先保证不带星号的位置
+>>> a,*b,c = 1,2
+>>> print(b)
+[]

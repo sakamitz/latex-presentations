@@ -1,0 +1,8 @@
+>>> list(map(int, input().split()))  # 1 2 3
+[1, 2, 3]
+
+# 多个列表
+def f(x, y, z):
+    return x+y == z
+>>> list(map(f, [1,1,1], [2,3,4], [3,4,6]))
+[True, True, False]

@@ -1,0 +1,11 @@
+def all(lst):
+    if len(lst) == 0:
+        return True
+    else:
+        return lst[0] and all(lst[1:])
+
+def any(lst):
+    if len(lst) == 0:
+        return False
+    else:
+        return lst[0] or any(lst[1:])

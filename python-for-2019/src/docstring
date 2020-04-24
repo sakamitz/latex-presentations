@@ -1,0 +1,4 @@
+def func(args):
+    """This is docstring.
+    It can cross multi-lines"""
+    # 函数体

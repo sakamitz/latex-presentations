@@ -1,0 +1,29 @@
+# 创建集合
+>>> basket = {'apple','orange','apple','pear','orange'}
+>>> print(basket)
+{'orange', 'pear', 'apple'}
+# 判断元素是否在集合中
+>>> 'crabgrass' in basket
+False
+# 类似列表推导式，集合也可这样用
+>>> a = {x for x in 'abracada' if x not in 'abc'}
+>>> a
+{'r', 'd'}
+
+# 两个集合间的运算
+>>> a = set('arcadia')
+>>> b = set('ala')
+>>> a
+{'c', 'r', 'a', 'd', 'i'}
+# 差集，即a中包含而b不包含的元素
+>>> a - b
+{'i', 'c', 'd', 'r'}
+# 并集
+>>> a | b
+{'c', 'a', 'r', 'd', 'i', 'l'}
+# 交集
+>>> a & b
+{'a'}
+# 对称差集，即(a-b) | (b-a)
+>>> a ^ b
+{'c', 'r', 'l', 'd', 'i'}

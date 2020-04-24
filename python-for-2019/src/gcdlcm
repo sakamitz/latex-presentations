@@ -1,0 +1,8 @@
+# math.gcd
+>>> gcd = math.gcd(78,21)
+>>> gcd
+3
+# 根据数论相关知识，有a*b = gcd*lcm
+>>> lcm = 78*21/gcd
+>>> lcm
+546.0

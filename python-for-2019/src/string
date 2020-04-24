@@ -1,0 +1,9 @@
+# 输出末尾不带空格的一种方法
+>>> ' '.join(map(str,[1,2,3]))
+'1 2 3'
+>>> 'this is harsh'.index('i')
+2
+>>> 'this is harsh'.find(' is')
+4
+>>> 'himself'.endswith('self')
+True

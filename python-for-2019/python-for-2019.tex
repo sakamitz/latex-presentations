@@ -1,0 +1,361 @@
+\documentclass{style/ucasproposal}
+
+\usepackage{style/commons}
+\usepackage{style/custom}
+\usepackage{fontspec}
+\usepackage[utf8]{inputenc}
+\usepackage[cache=false]{minted}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{multicol}
+
+\setmonofont{Fira Code}
+\newmintedfile[pythoncode]{python}{style=trac}
+\newcommand{\inlinepython}[1]{\mintinline[style=trac]{python}{#1}}
+
+% ----------------- 封面封底定义 --------------------
+\newlength{\drop}
+
+\newcommand*{\titleDB}{\begingroup
+	%\FSfont{5pl} % FontSite URW Palladio (Palatino)
+	\drop = 0.14\textheight
+	\centering
+	\vspace*{\drop}
+	{\Huge PYTHON}\\[\baselineskip]
+	{\Huge 常见\&易错知识点}\\[1.5\baselineskip]
+	{\LARGE BY}\\[\baselineskip]
+	{\LARGE 杨向南}\\[\baselineskip]
+	{\href{mailto:yxnan@pm.me}{yxnan@pm.me}}\par
+	\vfill
+	{浙江大学}\\[0.1\baselineskip]
+	{Java\&Python春学期朋辈辅学群\quad 首发}\\[8\baselineskip]
+	\vfill
+	{\small\sffamily \today}\par
+	\newpage
+	\endgroup}
+
+\newcommand*{\backDB}{\begingroup
+	%\FSfont{5pl} % FontSite URW Palladio (Palatino)
+	\drop = 0.4\textheight
+	\centering
+	\vspace*{\drop}
+	{\LARGE 祝大家都有不错的成绩！}\\[0.1\baselineskip]
+	\endgroup}
+% ----------------- 封面封底定义结束 --------------------
+
+\setcounter{tocdepth}{2}
+
+\begin{document}
+
+\thispagestyle{empty}
+\titleDB
+
+\pagenumbering{roman}
+\tableofcontents
+
+\clearpage
+\pagenumbering{arabic}
+\setcounter{section}{-1}
+
+\section{前言：如何寻求帮助}
+\subsection{使用dir函数查看可用的信息}
+dir函数是Python的一个内建函数，它可用于列出任意一个对象的所有成员。
+这样做有什么用呢？也许有时候，你花很多代码去实现的功能，说不定是Python自带的呢！
+
+例如，我们想知道可以对字符串进行哪些操作，可以在IDLE中输入
+\inlinepython{dir(str)}或任意一个字符串实例，\inlinepython{dir("py")}
+
+\pythoncode{src/dir}
+
+先不管前面带下划线的晦涩内容，我们可以在后面看到一些熟悉的函数，比如
+split、strip、join等等，其实这些就是Python为字符串提供的所有功能，其中
+很多都可以通过名字猜出大致作用，方便进一步查找。
+
+dir函数也可以用于查看模块。比如，在导入math模块后，通过\inlinepython{dir(math)}
+就能知道数学模块中所有可用的函数。\inlinepython{print(__builtins__)}则可以查看
+所有的内置函数。
+
+
+\subsection{查看``文档字符串''}
+\textbf{文档字符串}(\textit{docstring})，是指放在函数定义最开头的一个字符串，
+往往用于说明这个函数的\textbf{功能、参数、返回值}等信息。Python自带的库函数几乎都有文档字符串，直接查看这些函数的docstring就能获得很多信息，而不必再到网上查找。
+对任意一个函数，我们可以通过打印\inlinepython{__doc__}来获得它的docstring.
+这是文档字符串的定义例子：
+
+\pythoncode{src/docstring}
+
+如上定义的一个函数，我们可以通过\inlinepython{func.__doc__}来获取它的文档字符串。
+
+在之前，我们通过dir获取了字符串的成员函数，我们可以通过打印出其中感兴趣的函数的文档字符串来获取简单的帮助：
+
+\pythoncode{src/print-doc}
+
+读完这几行信息，我们就可以得知split函数的功能，还有它的两个参数sep和maxsplit。类似地，模块也有文档字符串，查看方法和函数相同，此处不再赘述。
+
+\newpage
+% \subsection{阅读说明及符号约定}
+% 除第零章外，其余各章均与浙江大学教材《Python程序设计》同步。
+
+% 尽管Python是一门动态语言，变量并没有确定不变的类型，但是对于内置函数，其参数和返回值类型往往是确定的，为了简洁地表示这些函数的类型，我们约定一套符号：
+
+% \inlinehaskell{func :: Int -> Float -> String} 表示：函数func接受两个参数，
+% 第一个是整数类型，第二个是浮点类型，返回值是字符串。\textbf{注意，这种表示法仅适用于本书}，
+% 并不是在Python中真实存在的写法，仅仅为了表达方便。
+
+% 完整的类型列表如下：
+% \begin{center}
+%     \captionof{table}{类型列表}
+%     \begin{tabular}{ccc}
+%         \hline
+%         写法 & 表达含义 & 对应Python类型或实例\\
+%         \hline
+%         Int & 整数 & int\\
+%         Float & 浮点数 & float\\
+%         Real & 实数，Int和Float的并集 & 无\\
+%         Complex & 复数 & complex\\
+%         Bool & 布尔值 & bool\\
+%         String & 字符串 & str\\
+%         [0pt][Int] & 由整数组成的列表 & [1,2] 等\\
+%         (Int, String) & 二元组 & (1, "str") 等\\
+%         Int+ & 表示可接受一个或多个Int & -\\
+%         小写字母a,b,... & 任意类型 & -\\
+%         () & 无返回值 & None\\
+%         \hline
+%     \end{tabular}
+% \end{center}
+
+% 一些例子：
+% \haskellcode{src/type}
+\section{Python语言概述}
+\subsection{数制及编码}
+使用bin、hex函数将整数转化为二进制、十六进制字符串：
+\pythoncode{src/binhex}
+
+掌握ASCII码的转换以及输出：
+\pythoncode{src/ascii}
+
+\subsection{输入输出函数}
+使用input函数进行输入，读到回车时结束，返回的字符串不包含换行符。得到的字符串可以用split等
+方法进行初步处理：
+\pythoncode{src/input}
+
+当然，输入只是第一步，重要的是掌握字符串、列表等数据结构的应用，便于游刃有余地处理输入数据。
+
+输出使用print函数：
+\pythoncode{src/print}
+
+\section{用Python编写程序}
+\subsection{数字类型}
+Python有4种内置数字类型：int,float,bool,complex。
+浮点类型float在计算机内部是以二进制形式储存的，因为十进制小数不一定都能转换为有限位数的二进制小数，所以可能存在误差，但在一般情况下不会影响结果。如果要求百分百的精确，可以使用
+\href{https://finthon.com/python-decimal/}{decimal} 模块处理浮点数。
+
+布尔值bool在算术运算中会被视作\textbf{整数}看待，其中True为1，False为0。利用这一点，我们可以用来计算
+表达式中正确的个数：
+\pythoncode{src/bool}
+
+math模块中有很多实用的数学函数，例如处理浮点舍入的floor,ceil,round，数学常数e,pi，常用函数
+sqrt,log10,exp等等。例如，计算a,b两数的最大公因数gcd和最小公倍数lcm：
+\pythoncode{src/gcdlcm}
+
+\subsection{赋值语句}
+除了简单的``变量=值''这种赋值语句外，前面我们给出的例子中使用了形如
+\inlinepython{a,b,c = ...} 的语句，这其实是\textbf{序列}的\textbf{封装与解构}(\textit{packing and unpacking})。
+所谓序列，就是指诸如字符串、列表、元组这样由``一连串有顺序的值''组成的结构。当等号两边都是序列时，右边的对象被解构（拆分），各自赋给左边对应的变量。\inlinepython{a,b,c = ...}其实是一种省略的写法，完整的形式是\inlinepython{(a,b,c) = ...}
+\pythoncode{src/unpacking}
+
+\subsection{格式化输出}
+格式化输出有两种方式，通过字符串的format方法，以及\%运算符。一些使用format的例子如下：
+\pythoncode{src/format}
+
+关于数字的format，需要记住这些用法：
+\inlinepython{^, <, >} 分别是居中、左对齐、右对齐，后面带宽度，
+\inlinepython{:}号后面带填充的字符，只能是一个字符，不指定则默认是用空格填充。
+\inlinepython{+}表示在正数前显示+；（空格）表示在正数前加空格。
+
+\pythoncode{src/numformat}
+
+也可以用\%运算符来实现格式化输出，与format相比更加直观，但功能不如后者。
+\pythoncode{src/performat}
+
+
+\section{使用字符串、列表和元组}
+\subsection{序列}
+关于序列对象，重点需要掌握的就是range函数，它有3种使用方法：
+\pythoncode{src/range}
+
+另一个就是序列的切片运算，和range一样也有3种用法：
+\pythoncode{src/slice}
+
+需要注意的是，对于序列，如果你想复制一个对象用于操作，同时保持原对象不变，
+是不能用\inlinepython{a=my_list}这样的赋值方式的，因为这样a和my\_list其实指的是同一个对象。
+要取得一份序列的复制，可以使用\inlinepython{my_list[:]}这样的写法。
+\pythoncode{src/copy}
+
+\subsection{字符串}
+需要注意的是，字符串属于\textbf{``不可变''}的序列。也就是说，
+不能使用\inlinepython{s[0]='a'}这样的语句来赋值。字符串的strip、replace等方法其实是返回了
+一个新的字符串，而不是在原字符串的基础上修改。一些常用的字符串方法如下：
+\pythoncode{src/string}
+
+\subsection{列表与元组}
+列表常用的方法有append, clear, count, extend, index, insert, pop, remove,
+reverse, sort。
+可以在IDLE中输入\inlinepython{print([].sort.__doc__)}来查看sort的用法。
+需要注意的是，index函数只会返回第一个找到的位置，如果有多个相同的元素，需要手动用循环处理。
+上述函数中，除了count，index之外都会改变原列表。
+\pythoncode{src/list}
+
+元组可简单地看作不可变的列表，但注意，``不可变''仅仅对元组的直接元素生效，即，
+如果元组包含了一个可变对象，则这个对象本身是可变的：
+\pythoncode{src/tuple}
+
+字符串、列表、元组之间可以用str,list,tuple三个函数实现互相转换。由于它们都是可迭代对象，
+因此都具有如下运算：
+\pythoncode{src/iter}
+
+
+\section{条件、循环}
+条件、循环相关的语句有if,while,for三个。需要知道的是，else子句不仅可以用在if中，也可以用在
+while和for语句中，当且仅当循环结束时执行一次。那么它与直接放在循环体之后的语句有什么不同呢？
+不同点就在于如果循环\textbf{非正常结束}，例如使用了break语句，那么else子句将会被跳过，
+所以可以在else语句块中写一些正常结束循环时才执行的代码。例如，判断用户输入的数是否为素数：
+\pythoncode{src/else}
+
+\section{集合与字典}
+\subsection{集合}
+\textbf{集合}(\textit{set})是一个\textbf{无序的不重复元素序列}。
+可以使用大括号 \{ \} 或者 set() 函数创建集合，注意：创建一个空集合必须用 set()，
+因为 \{ \} 是用来创建一个空字典。 
+\pythoncode{src/set}
+
+集合常用的内置方法如下，具体使用方法可以查看相应的docstring：
+\begin{center}
+	\captionof{table}{类型列表}
+	\begin{tabular}{ll}
+		\hline
+		方法 & 描述\\
+		\hline
+		A.add(a) & 为集合A添加元素\\
+		A.discard(a) & 从A中删除元素a，即使不存在也不会报错\\
+		A.clear() & 清空集合A\\
+		A.copy() & 返回集合A的一份拷贝\\
+		A.difference(B,C,...) & 返回A - B - C - ...\\
+		A.difference\_update & 同上，但会改变原集合A\\
+		A.symmetric\_difference(B) & 返回A,B的对称差集\\
+		A.symmetric\_difference\_update & 同上，但会改变原集合A\\
+		A.intersection(B,C,...) & 返回交集\\
+		A.union(B,C,...) & 返回并集\\
+		A.isdisjoint(B) & 如A,B不相交，则返回True\\
+		A.issubset(B) & A是否为B的子集\\
+		A.issuperset(B) & A是否为B的超集\\
+		A.update() & 用序列给集合添加元素（见下）\\
+		\hline
+	\end{tabular}
+\end{center}
+
+\pythoncode{src/update}
+
+\subsection{字典}
+字典是另一种可变容器模型，且可存储任意类型对象。字典的每一项由键和值组成，
+\textbf{键必须是唯一的}，但值则不必。
+值可以取任何数据类型，但键必须是\textbf{不可变的}，如字符串，数字或元组。
+基于这个原因，作为键的元组里也不能包含可变对象，如列表、集合等。
+创建字典有3种方法：
+\pythoncode{src/dict}
+
+访问字典有两种方式，一种是用键直接访问，比如\inlinepython{dict1['name']}，另一种是通过字典
+的get方法，\inlinepython{dict1.get('name')}，不同点在于，如果相应的键不存在，
+前者会引发错误，后者会返回\inlinepython{None}。
+
+为字典添加值也有两种方式，一种是直接对键赋值\inlinepython{dict1[key] = value}；另一种使用
+字典的update方法，用其他字典来扩充自身：\inlinepython{dict1.update(dict2)}。
+
+删除某个字典元素可以使用\inlinepython{del(dict1[key])}的形式，
+也可以使用\inlinepython{dict1.pop(key)}，两者在对应的键不存在时都会引发错误。
+要清空字典，可以使用\inlinepython{dict1.clear()}.
+
+字典的遍历可使用dict类的keys,values,items方法，一些具体的例子见下：
+\pythoncode{src/dicttravs}
+
+
+\section{函数}
+\subsection{值传递与引用传递}
+在python中，字符串str，元组tuple，数字int,float等属于\textbf{不可变类型}
+(\textit{immutable})，而列表list，字典dict等则是\textbf{可变类型}(\textit{mutable})。
+当作为函数的形参时，如\inlinepython{func(a)}，如果是不可变类型，传递的只是a的值，
+而不是a对象本身。比如在函数内部修改a的值，只是修改另一个复制的对象，不会影响a本身。
+而对于可变类型，传递的是对象本身，在函数里修改a后，外部的a也会随之改变。
+\pythoncode{src/mutable}
+
+\subsection{参数绑定}
+定义函数时，可指定两种参数：必需参数和非必需参数。其中，\textbf{必需参数}在调用时可以使用
+\textbf{位置参数}和\textbf{关键字参数}两种形式，它们的区别就是传递时前者要根据与定义相同的顺序排列，而后者可以
+打乱。
+
+\textbf{注意}：位置参数必须在所有关键字参数前面，不然Python没法知道你的参数该怎样正确对应。以下是一些函数定义和调用的例子：
+\pythoncode{src/compulsory}
+
+\textbf{非必需参数}必须放在所有必须参数后面，分为默认参数、不定长参数两种。其中，如果默认参数没有传值，则使用指定的值：
+\pythoncode{src/default}
+
+不定长参数用于接受任意个参数，可以以元组或字典两种方式导入：
+\pythoncode{src/optional}
+
+以字典导入时，采用关键字语法：
+\pythoncode{src/optdict}
+
+在综合运用时，\textbf{一定要注意各种参数的先后顺序}。下面是一些判断题，请判断哪些函数的定义
+方式是正确的：
+\begin{enumerate}
+	\item \inlinepython{def f1(x, y=2, *z)}
+	\item \inlinepython{def f2(x, *y, **z)}
+	\item \inlinepython{def f3(x, **y, *z)}
+	\item \inlinepython{def f4(x, *y, z=3)}
+	\item \inlinepython{def f5(x, *y, z=3, **t)}
+\end{enumerate}
+
+答案：3错，其他全对。但请注意，4,5定义的z只能通过关键字语法赋值，
+它的优先级比不定长参数高，因此不会被后面的字典吸收。
+
+\subsection{常用的内置函数}
+\subsubsection{sorted}
+sorted函数用于给可迭代对象排序，包括列表、元组和字符串，返回按升序排列的列表。
+该函数有两个关键字参数，key和reverse，key接收一个函数，这个函数会在每一个元素上调用，
+根据其结果进行排序。reverse默认为False，为True时则按降序排序。
+\pythoncode{src/sorted}
+
+\subsubsection{map}
+map函数接受一个函数、一个或多个可迭代对象。简单来说，
+map(f,[x1,x2,...]) = [f(x1),f(x2),...]. 但注意，map返回的并不是一个列表，
+而是一个内建的map对象，虽然也属于可迭代对象，很多行为和列表相同，但不能直接打印，
+需要先用list()转换为列表。下面是几个例子：
+\pythoncode{src/map}
+
+\subsubsection{eval}
+eval用于计算一个Python表达式的值。实际上，你在IDLE里输入的每一行，Python都是通过调用
+eval来计算的。下面是几个例子：
+\pythoncode{src/eval}
+
+\subsubsection{all \& any}
+all和any都用于可迭代对象，其中all当且仅当所有元素都为True时返回True，any则只要一个为True就
+返回True。元素除了0、None、False、空（空字符串、空列表...）之外都算True。
+我们可以简单地写出这两个函数：
+
+\begin{multicols}{2}
+	循环版本：
+	\pythoncode{src/allany}
+	
+	递归版本：
+	\pythoncode{src/allanyrecv}
+\end{multicols}
+
+\subsection{模块}
+Python自带很多模块，这些模块涵盖了各方面的需求，有时候需要什么功能，就可以直接引用，
+十分方便。使用import语句导入模块：
+\pythoncode{src/import}
+
+\newpage
+\thispagestyle{empty}
+\backDB
+\end{document}

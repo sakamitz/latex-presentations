@@ -1,0 +1,8 @@
+# print有4个关键字参数：sep,end,file,flush
+# 打印print的文档字符串，并取第一行
+>>> print(print.__doc__.split(sep='\n')[0])
+print(value, ..., sep=' ', end='\n', file=sys.stdout, flush=False)
+
+# 以+作为间隔，不换行
+>>> print(1,2,3,4, sep='+', end='')
+1+2+3+4

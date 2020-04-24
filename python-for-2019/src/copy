@@ -1,0 +1,12 @@
+>>> my_list = [1,2,3]
+# id代表一个对象的唯一识别值
+>>> id(my_list)
+1591860046512
+>>> a = my_list
+>>> id(a)
+1591860046512  # 与my_list的id相同
+>>> my_copy = my_list[:]
+>>> print(my_copy)
+[1, 2, 3]
+>>> id(my_copy)
+1591868623296  # id不同，是新的对象

@@ -1,0 +1,11 @@
+def all(lst):
+    for element in lst:
+        if not element:
+            return False
+    return True
+
+def any(lst):
+    for element in lst:
+        if element:
+            return True
+    return False

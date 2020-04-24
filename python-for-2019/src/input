@@ -1,0 +1,11 @@
+# 列表解构
+>>> idNum,name,score = input().split()
+319000 LiHua 90
+>>> idNum,name,score
+('319000', 'LiHua', '90')
+
+# 对于不定长的输入，可以限制分割的最大次数
+>>> idNum,name,scoreList = input().split(maxsplit=2)
+319000 LiHua 90 89 94 100 87
+>>> idNum,name,scoreList
+('319000', 'LiHua', '90 89 94 100 87')
