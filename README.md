@@ -5,7 +5,7 @@
 </p>
 </div>
 
-| Project         | Statu            | Introduction                                                 |
+| Project         | Status           | Introduction                                                 |
 | --------------- | ---------------- | ------------------------------------------------------------ |
 | laziness-of-ghc | **Finished** | The feature and principle about lazy evaluation in GHC Haskell, on **ZJU-Lambda Conference**, May 2019 |
 | python-for-2019 | **Finished** | Written for students of **basic python course** in ZJU, as learning materials and examples |
